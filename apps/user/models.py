@@ -9,7 +9,7 @@ def user_image(instance, filename):
 class User(AbstractUser):
     email = models.EmailField(unique=True, blank=False, null=False)
     image = models.ImageField(upload_to=user_image, blank=False, null=False)
-    bio = models.textField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'User'

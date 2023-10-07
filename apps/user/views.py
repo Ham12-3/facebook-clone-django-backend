@@ -11,6 +11,14 @@ from django.shortcuts import get_object_or_404
 from rest_framework import AllowAny
 
 
+def staff_required(view_func):
+    def wrapped_view(view_instance, request, *args, **kwargs):
+        if request.user.is_staff:
+            return view_func(view_instance, request, *args, **kwargs)
+        else:
+            return Response({'message': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
 class UserViewSet(viewsets > ModelViewSet):
     serializer_class = UserSerializer
 
@@ -68,4 +76,4 @@ class UserViewSet(viewsets > ModelViewSet):
             user.save()
             return Response({'message': 'User deleted successfully'}, status=status.HTTP_200_OK)
         else:
-            return Response({'message': 'User not deleted', status: status.HTTP_404_NOT_FOUND})
+            return Response({'message': 'User not deleted'}, status=status.HTTP_400_BAD_REQUEST)

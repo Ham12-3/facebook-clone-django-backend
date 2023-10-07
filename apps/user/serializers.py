@@ -1,5 +1,6 @@
 from .models import User
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -32,3 +33,8 @@ class ChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError("passwords don't match")
         else:
             return data
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    # return a dictionary data with keys 'access' and 'refresh'
+    pass

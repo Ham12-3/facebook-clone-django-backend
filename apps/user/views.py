@@ -3,7 +3,8 @@ from rest_framework import viewsets
 from .serializers import (
     UserSerializer,
     UserCreateSerializer,
-    ChangePasswordSerializer
+    ChangePasswordSerializer,
+    CustomTokenObtainPairSerializer
 )
 
 from rest_framework.response import Response
@@ -11,6 +12,8 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework import AllowAny
 from rest_framework import action
+from rest_framework import TokenObtainPairView
+from django.contrib.auth import authenticate
 
 
 def staff_required(view_func):
@@ -90,3 +93,29 @@ class UserViewSet(viewsets > ModelViewSet):
             user.set_password(password_serializer.validated_data['password'])
             user.save()
             return Response({'message': 'Password changed successfullly'}, status=status.HTTP_200_OK)
+        else:
+            return Response(password_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username', '')
+        password = request.data.get('password', '')
+        user = authenticate(username=username, password=password)
+
+        if user:
+            login_serializer = self.get_serializer(data=request.data)
+            if login_serializer.is_valid():
+                user_serializer = UserSerializer(user)
+                return Reponse({
+                    'access': login_serializer.validated_data['access'],
+                    'refresh': login_serializer.validated_data['refresh'],
+                    'user': user_serializer.data,
+                    'message': 'login successful'
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response(login_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'messgae':'Invalid username or password'}, status:status.HTTP_400_BAD_REQUEST)

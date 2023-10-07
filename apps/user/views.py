@@ -48,6 +48,24 @@ class UserViewSet(viewsets > ModelViewSet):
         user_serializer = self.serializer_class(user, data=request.data)
         if user_serializer.is_valid():
             user_serializer.save()
-            return Response({'message': 'User updated successfully'}, status=status.HTTP_200_OK)
+            return Response({'message': 'User updated successfully', 'data': user_serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        user = self.serializer_class.Meta.model.objects.filter(
+            is_active=True, pk=pk).first()
+        if user:
+            user_serializer = self.serilizer_class(user)
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Resonse({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    def destroy(self, request, pk=None):
+        user = self.get_object(pk=pk)
+        user.is_acitve = False
+        if user.is_active == False:
+            user.save()
+            return Response({'message': 'User deleted successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'User not deleted', status: status.HTTP_404_NOT_FOUND})

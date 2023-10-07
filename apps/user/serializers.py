@@ -19,3 +19,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user.set_password(validated_data('password'))
         user.save()
         return user
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    password1 = serializers.CharField(
+        require=True, write_only=True, min_length=5)
+    password2 = serializers.CharField(
+        require=True, write_only=True, min_length=5)
+
+    def validate(self, data):
+        if data['password1'] != data['password2']:
+            raise serializers.ValidationError("passwords don't match")
+        else:
+            return data

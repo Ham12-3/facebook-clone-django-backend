@@ -76,7 +76,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.serializer_class.Meta.model.objects.filter(
             is_active=True, pk=pk).first()
         if user:
-            user_serializer = self.serilizer_class(user)
+            user_serializer = self.serializer_class(user)
             return Response(user_serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)

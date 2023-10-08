@@ -60,4 +60,19 @@ class PostViewSet(viewsets.ModeViewSet):
 
                 post_serializer = PostSerializer(post, data=data)
                 if post_serializer.is_valid():
-                    return Response({'message': 'Post updated successfully'}, status=status.HTTP_200_OK)
+                    return Response({'message': 'Post updated successfully', 'data': post_serializer.data}, status=status.HTTP_200_OK)
+                else:
+                    return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            else:
+                post_serializer = PostSerializer(post, data=request.data)
+                if post_serializer.is_valid():
+                    post_serializer.save()
+                    return Response({'message': 'Post updated successfully', 'data': post_serializer.data}, status=status.HTTP_200_OK)
+                else:
+                    return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        post = self.get_object(pk=pk)
+        if not is_owner(request, post):
+            return Response({'message': 'You are not authorized to perform this action'}, status=status.HTTP_401_UNAUTHORIZED)

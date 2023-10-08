@@ -14,6 +14,8 @@ from rest_framework import AllowAny
 from rest_framework import action
 from rest_framework import TokenObtainPairView
 from django.contrib.auth import authenticate
+from rest_framework.view import APIView
+from django.db.models.query_utils import Q
 
 
 def staff_required(view_func):
@@ -109,7 +111,7 @@ class LoginView(TokenObtainPairView):
             login_serializer = self.get_serializer(data=request.data)
             if login_serializer.is_valid():
                 user_serializer = UserSerializer(user)
-                return Reponse({
+                return Response({
                     'access': login_serializer.validated_data['access'],
                     'refresh': login_serializer.validated_data['refresh'],
                     'user': user_serializer.data,
@@ -118,4 +120,17 @@ class LoginView(TokenObtainPairView):
             else:
                 return Response(login_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'messgae':'Invalid username or password'}, status:status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Invalid username or password', }, status=status.HTTP_400_BAD_REQUEST)
+
+# urls.py(project)
+
+
+class SearchUserView(APIView):
+    def get(self, request):
+        search_term = request.query_params.get('search')
+        matches = User.objects.filter(
+            Q(username_icontains=search_term) |
+            Q(first_name_icontains=search_term) |
+            Q(last_name_icontains=search_term)
+
+        )

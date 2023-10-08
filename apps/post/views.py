@@ -26,3 +26,20 @@ class PostViewSet(viewsets.ModeViewSet):
     def list(self, request):
         posts = self.serializer_class.Meta.model.objects.order_by('-id').all()
         paginator = CustomPagination()
+        results = paginator.paginate_queryset(posts, request)
+
+        post_serializers = self.get_serializer(results, many=True)
+        return paginator.get_paginated_response(post_serializers.data)
+
+    def create(self, request):
+        post_serializer = PostCreateSerializer(data=request.data)
+        if post_serializer.is_valid():
+            post_serializer.save()
+            return Response(post_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        posts = self.get_object(pk=pk)
+        post_serializer = self.serializer_class(posts)
+        return Response(post_serializer.data, status=status.HTTP_200_OK)

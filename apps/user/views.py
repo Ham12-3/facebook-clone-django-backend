@@ -10,11 +10,12 @@ from .serializers import (
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from rest_framework import AllowAny
-from rest_framework import action
-from rest_framework import TokenObtainPairView
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import action
+
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
-from rest_framework.view import APIView
+from rest_framework.views import APIView
 from django.db.models.query_utils import Q
 
 
@@ -27,7 +28,7 @@ def staff_required(view_func):
     return wrapped_view
 
 
-class UserViewSet(viewsets > ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     def get_queryset(self):
@@ -75,7 +76,7 @@ class UserViewSet(viewsets > ModelViewSet):
             user_serializer = self.serilizer_class(user)
             return Response(user_serializer.data, status=status.HTTP_200_OK)
         else:
-            return Resonse({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
     @staff_required
     def destroy(self, request, pk=None):
@@ -87,9 +88,9 @@ class UserViewSet(viewsets > ModelViewSet):
         else:
             return Response({'message': 'User not deleted'}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=['POSt'], details=True)
+    @action(methods=['POST'], detail=True)
     def change_password(self, request, pk=None):
-        user = self.get_bject(pk=pk)
+        user = self.get_object(pk=pk)
         password_serializer = ChangePasswordSerializer(data=request.data)
         if password_serializer.is_valid():
             user.set_password(password_serializer.validated_data['password'])
@@ -133,4 +134,4 @@ class SearchUserView(APIView):
             Q(first_name_icontains=search_term) |
             Q(last_name_icontains=search_term)
 
-        )
+        ).distinct()

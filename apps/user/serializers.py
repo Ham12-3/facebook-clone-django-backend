@@ -35,6 +35,20 @@ class ChangePasswordSerializer(serializers.Serializer):
             return data
 
 
+class SearchUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'first_name',
+                  'last_name', 'bio', 'image')
+
+
+class UserLoggedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'first_name',
+                  'last_name', 'bio', 'image')
+
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     # return a dictionary data with keys 'access' and 'refresh'
     pass

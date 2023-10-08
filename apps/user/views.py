@@ -4,7 +4,9 @@ from .serializers import (
     UserSerializer,
     UserCreateSerializer,
     ChangePasswordSerializer,
-    CustomTokenObtainPairSerializer
+    CustomTokenObtainPairSerializer,
+    SearchUserSerializer,
+    UserLoggedSerializer
 )
 
 from rest_framework.response import Response
@@ -17,6 +19,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from django.db.models.query_utils import Q
+from .pagination import CustomPagination
 
 
 def staff_required(view_func):
@@ -135,3 +138,16 @@ class SearchUserView(APIView):
             Q(last_name_icontains=search_term)
 
         ).distinct()
+
+        paginator = CustomPagination()
+        results = paginator.paginate_queryset(matches, request)
+
+        user_search_serializer = SearchUserSerializer(results, many=True)
+        return paginator.get_paginated_response(user_search_serializer.data)
+
+
+class UserLoggedDataView(APIView):
+    def get(self, request):
+        user = request.user
+        user_serializer = UserLoggedSerializer(user)
+        return Response(user_serializer.data, status=status.HTTP_200_OK)

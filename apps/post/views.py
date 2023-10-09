@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from apps.user.models import CustomPagination
+from rest_framework.views import APIView
 
 
 def is_owner(request, instance):
@@ -76,3 +77,26 @@ class PostViewSet(viewsets.ModeViewSet):
         post = self.get_object(pk=pk)
         if not is_owner(request, post):
             return Response({'message': 'You are not authorized to perform this action'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            post.delete()
+            return Response({'message': 'Post deleted successfully '}, status=status.HTTP_200_OK)
+
+
+class PostLikeView(APIView):
+    def post(self, request, postId):
+        try:
+            # post.likes += 1
+            post = get_object_or_404(Post, pk=postId)
+            return Response({'message': 'Post liked successfully'}, status=status.HTTP_200_OK)
+        except Post.DoesNotExist:
+            return Response({'message': 'Post does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class PostRemoveLikeView(APIVIew):
+    def delete(self, request, postId):
+        try:
+            post = get_object_or_404(Post, pk=postId)
+            post.likes.remove(request.user)
+            return Response({'message': 'Post unliked successfully'}, status=status.HTTP_200_OK)
+        except Post.DoesNotExist:
+            return Response({'message': 'Post does not exist'}, status=status.HTTP_404_NOT_FOUND)

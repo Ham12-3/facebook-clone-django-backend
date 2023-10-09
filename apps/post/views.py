@@ -7,15 +7,16 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from apps.user.models import CustomPagination
+from apps.user.pagination import CustomPagination
 from rest_framework.views import APIView
+from .models import Post
 
 
 def is_owner(request, instance):
     return request.user == instance.author or request.user.is_staff  # boolean value
 
 
-class PostViewSet(viewsets.ModeViewSet):
+class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
 
     def get_queryset(self):
@@ -92,7 +93,7 @@ class PostLikeView(APIView):
             return Response({'message': 'Post does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 
-class PostRemoveLikeView(APIVIew):
+class PostRemoveLikeView(APIView):
     def delete(self, request, postId):
         try:
             post = get_object_or_404(Post, pk=postId)

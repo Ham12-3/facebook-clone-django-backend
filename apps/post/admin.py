@@ -4,7 +4,7 @@ from .models import Post
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('author',  'id',)
+    # list_display = ('author',  'id',)
     ordering = ('-id',)
 
 

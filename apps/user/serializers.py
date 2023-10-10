@@ -49,7 +49,7 @@ class SearchUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name',
-                  'last_name', 'bio', 'image')
+                  'last_name', 'bio', 'image', 'posts_count')
 
     def get_posts_count(self, obj):
         # posts is @property

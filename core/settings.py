@@ -1,12 +1,7 @@
+
+
 from pathlib import Path
 from datetime import timedelta
-import os
-import environ
-import dj_database_url
-
-env = environ.Env()
-environ.Env.read_env()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -15,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'django-insecure-$+b-7bc0gjwcz%@qdvgb3xdlhhn2@s=hqk3sng@#x-zhj%e-%&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')
+DEBUG = True
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEPLOY')
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -40,6 +35,7 @@ INSTALLED_APPS = [
     'apps.user',
     'apps.post',
     'apps.comment',
+
 ]
 
 MIDDLEWARE = [
@@ -78,7 +74,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME':   'django',
+        'USER': 'user',
+        'PASSWORD': 'password',
+        'HOST': 'db',
+        'PORT': '5432',
+    }
 }
 
 
@@ -122,44 +125,44 @@ MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / 'static_root'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-]
 
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS
-CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS_DEPLOY')
 
-CORS_ALLOWED_WHITELIST = env.list('CORS_ALLOWED_WHITELIST_DEPLOY')
+# CORS
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:8000',
+]
+
+CORS_ALLOWED_WHITELIST = [
+    'http://localhost:3000',
+    'http:/localhost:8000',
+]
+
 
 # SIMPLE_JWT
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
-}
 
+}
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
 
+
 AUTH_USER_MODEL = 'user.User'
-
-CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEPLOY')
-
-# 'default': {
-#     'ENGINE': 'django.db.backends.postgresql',
-#     'NAME': os.environ.get('DB_NAME_DEV'),
-#     'USER': os.environ.get('DB_USER_DEV'),
-#     'PASSWORD': os.environ.get('DB_PASSWORD_DEV'),
-#     'HOST': os.environ.get('DB_HOST_DEV'),
-#     'PORT': os.environ.get('DB_PORT_DEV'),
-# }

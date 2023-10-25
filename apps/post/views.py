@@ -1,6 +1,7 @@
 from .serializers import (
     PostSerializer,
-    PostCreateSerializer
+    PostCreateSerializer,
+    PostUpdateSerializer
 )
 
 from rest_framework import viewsets
@@ -60,14 +61,14 @@ class PostViewSet(viewsets.ModelViewSet):
                 current_image = post.image
                 data['image'] = current_image
 
-                post_serializer = PostSerializer(post, data=data)
+                post_serializer = PostUpdateSerializer(post, data=data)
                 if post_serializer.is_valid():
                     return Response({'message': 'Post updated successfully', 'data': post_serializer.data}, status=status.HTTP_200_OK)
                 else:
                     return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
             else:
-                post_serializer = PostSerializer(post, data=request.data)
+                post_serializer = PostUpdateSerializer(post, data=request.data)
                 if post_serializer.is_valid():
                     post_serializer.save()
                     return Response({'message': 'Post updated successfully', 'data': post_serializer.data}, status=status.HTTP_200_OK)

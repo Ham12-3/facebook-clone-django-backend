@@ -8,7 +8,7 @@ class PostSerializer(serializers.ModelSerializer):
     author_image = serializers.ReadOnlyField(source='author.image.url')
     author_id = serializers.ReadOnlyField(source='author.id')
     likes = serializers.SerializerMethodField()
-    comment = CommentSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
     image = serializers.SerializerMethodField()
 
     class Meta:
@@ -35,7 +35,7 @@ class PostUpdateSerializer(serializers.ModelSerializer):
     author_image = serializers.ReadOnlyField(source='author.image.url')
     author_id = serializers.ReadOnlyField(source='author.id')
     likes = serializers.SerializerMethodField()
-    comment = CommentSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post

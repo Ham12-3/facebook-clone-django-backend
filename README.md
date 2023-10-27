@@ -1,6 +1,3 @@
-![backend-3](https://github.com/Ham12-3/facebook-clone-django-backend/assets/93613316/9bb552b0-1230-4f94-b8bb-424cf6b9f058)
-![django-1](https://github.com/Ham12-3/facebook-clone-django-backend/assets/93613316/1cc43212-611a-4049-ae1d-ed0f53b9cea4)
-![backend-2](https://github.com/Ham12-3/facebook-clone-django-backend/assets/93613316/57706cce-4304-4004-bb0f-6f54b872ac5a)
 <h1>Facebook Clone Django Backend</h1>
 
 # Rest API for the facebook clone backend built with Python Django and PostgreSQL.
@@ -34,3 +31,13 @@ python manage.py createsuperuser
 ```
 
 
+
+
+
+
+
+
+
+![backend-3](https://github.com/Ham12-3/facebook-clone-django-backend/assets/93613316/9bb552b0-1230-4f94-b8bb-424cf6b9f058)
+![django-1](https://github.com/Ham12-3/facebook-clone-django-backend/assets/93613316/1cc43212-611a-4049-ae1d-ed0f53b9cea4)
+![backend-2](https://github.com/Ham12-3/facebook-clone-django-backend/assets/93613316/57706cce-4304-4004-bb0f-6f54b872ac5a)

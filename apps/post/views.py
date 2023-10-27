@@ -89,6 +89,7 @@ class PostLikeView(APIView):
         try:
             # post.likes += 1
             post = get_object_or_404(Post, pk=postId)
+            post.likes.add(request.user)
             return Response({'message': 'Post liked successfully'}, status=status.HTTP_200_OK)
         except Post.DoesNotExist:
             return Response({'message': 'Post does not exist'}, status=status.HTTP_404_NOT_FOUND)

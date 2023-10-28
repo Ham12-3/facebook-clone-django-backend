@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from .models import Post
+from rest_framework import serializers
 from apps.comment.serializers import CommentSerializer
 
 
@@ -19,7 +19,6 @@ class PostSerializer(serializers.ModelSerializer):
         return [user.username for user in obj.likes.all()]
 
     # Env
-
     def get_image(self, obj):
         return obj.image.url.replace('http://localhost:8000', '')
 

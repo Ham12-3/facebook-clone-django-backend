@@ -3,7 +3,6 @@ from .serializers import (
     PostCreateSerializer,
     PostUpdateSerializer
 )
-
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
@@ -35,8 +34,8 @@ class PostViewSet(viewsets.ModelViewSet):
         paginator = CustomPagination()
         results = paginator.paginate_queryset(posts, request)
 
-        post_serializers = self.get_serializer(results, many=True)
-        return paginator.get_paginated_response(post_serializers.data)
+        posts_serializers = self.get_serializer(results, many=True)
+        return paginator.get_paginated_response(posts_serializers.data)
 
     def create(self, request):
         post_serializer = PostCreateSerializer(data=request.data)
@@ -63,10 +62,10 @@ class PostViewSet(viewsets.ModelViewSet):
 
                 post_serializer = PostUpdateSerializer(post, data=data)
                 if post_serializer.is_valid():
+                    post_serializer.save()
                     return Response({'message': 'Post updated successfully', 'data': post_serializer.data}, status=status.HTTP_200_OK)
                 else:
                     return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
             else:
                 post_serializer = PostUpdateSerializer(post, data=request.data)
                 if post_serializer.is_valid():
@@ -81,7 +80,7 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response({'message': 'You are not authorized to perform this action'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             post.delete()
-            return Response({'message': 'Post deleted successfully '}, status=status.HTTP_200_OK)
+            return Response({'message': 'Post deleted successfully'}, status=status.HTTP_200_OK)
 
 
 class PostLikeView(APIView):

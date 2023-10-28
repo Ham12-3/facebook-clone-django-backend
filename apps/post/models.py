@@ -13,7 +13,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(
-        User, related_name='likes_set', blank=True, verbose_name='likes')
+        User, related_name='likes_set', blank=True, verbose_name='Likes')
 
     def __str__(self):
         return f"{self.author.username} - {self.id}"

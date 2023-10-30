@@ -38,7 +38,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 
     def validate(self, data):
         if data['password1'] != data['password2']:
-            raise serializers.ValidationError("passwords don't match")
+            raise serializers.ValidationError("Passwords don't match")
         else:
             return data
 
@@ -49,7 +49,7 @@ class SearchUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name',
-                  'last_name', 'bio', 'image', 'posts_count')
+                  'last_name', 'bio', 'image', 'posts_count',)
 
     def get_posts_count(self, obj):
         # posts is @property
@@ -60,9 +60,10 @@ class UserLoggedSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name',
-                  'last_name', 'bio', 'image')
+                  'last_name', 'bio', 'image',)
 
 
+# ==================== AUTH ====================
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    # return a dictionary data with keys 'access' and 'refresh'
+    # return a dictionary data with keys "access" and "refresh"
     pass

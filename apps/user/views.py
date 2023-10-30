@@ -1,4 +1,3 @@
-
 from rest_framework import viewsets
 from .serializers import (
     UserSerializer,
@@ -8,13 +7,11 @@ from .serializers import (
     SearchUserSerializer,
     UserLoggedSerializer
 )
-
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
-
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
@@ -85,7 +82,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @staff_required
     def destroy(self, request, pk=None):
         user = self.get_object(pk=pk)
-        user.is_acitve = False
+        user.is_active = False
         if user.is_active == False:
             user.save()
             return Response({'message': 'User deleted successfully'}, status=status.HTTP_200_OK)
@@ -97,19 +94,22 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.get_object(pk=pk)
         password_serializer = ChangePasswordSerializer(data=request.data)
         if password_serializer.is_valid():
-            user.set_password(password_serializer.validated_data['password1'])
+            user.set_password(
+                password_serializer.validated_data['password1'])  # hash
             user.save()
-            return Response({'message': 'Password changed successfullly'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
         else:
             return Response(password_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# ==================== AUTH ====================
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username', '')
         password = request.data.get('password', '')
+        # validated instance
         user = authenticate(username=username, password=password)
 
         if user:
@@ -120,13 +120,12 @@ class LoginView(TokenObtainPairView):
                     'access': login_serializer.validated_data['access'],
                     'refresh': login_serializer.validated_data['refresh'],
                     'user': user_serializer.data,
-                    'message': 'login successful'
+                    'message': 'Login successful'
                 }, status=status.HTTP_200_OK)
             else:
                 return Response(login_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'message': 'Invalid username or password', }, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response({'message': 'Invalid username or password'}, status=status.HTTP_400_BAD_REQUEST)
 # urls.py(project)
 
 
@@ -134,10 +133,9 @@ class SearchUserView(APIView):
     def get(self, request):
         search_term = request.query_params.get('search')
         matches = User.objects.filter(
-            Q(username_icontains=search_term) |
-            Q(first_name_icontains=search_term) |
-            Q(last_name_icontains=search_term)
-
+            Q(username__icontains=search_term) |
+            Q(first_name__icontains=search_term) |
+            Q(last_name__icontains=search_term)
         ).distinct()
 
         paginator = CustomPagination()

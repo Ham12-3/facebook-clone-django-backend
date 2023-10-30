@@ -9,6 +9,8 @@ services:
          - '8000:8000'
        depends_on:
          - db
+       env_file:
+         - .env
     db:
        container_name: postgres-container
        image: postgres
